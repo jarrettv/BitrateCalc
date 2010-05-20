@@ -110,7 +110,9 @@ namespace BitrateCalc
             this.timeText = new System.Windows.Forms.TextBox();
             this.container = new System.Windows.Forms.ComboBox();
             this.sizeGroupbox = new System.Windows.Forms.GroupBox();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.videoSize = new BitrateCalc.SizeBitrateBox();
+            this.totalSize = new BitrateCalc.SizeBitrateBox();
+            this.presetLink = new System.Windows.Forms.LinkLabel();
             this.qEstRadio = new System.Windows.Forms.RadioButton();
             this.qest = new System.Windows.Forms.NumericUpDown();
             this.bppRadio = new System.Windows.Forms.RadioButton();
@@ -133,8 +135,7 @@ namespace BitrateCalc
             this.checkForUpdatesNowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.visitWebpageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.videoSize = new BitrateCalc.SizeBitrateBox();
-            this.totalSize = new BitrateCalc.SizeBitrateBox();
+            this.presetMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.videoGroupbox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.width)).BeginInit();
@@ -254,7 +255,6 @@ namespace BitrateCalc
             0,
             0,
             0});
-            this.height.ValueChanged += new System.EventHandler(this.textField_TextChanged);
             // 
             // label10
             // 
@@ -286,7 +286,6 @@ namespace BitrateCalc
             0,
             0,
             0});
-            this.width.ValueChanged += new System.EventHandler(this.textField_TextChanged);
             // 
             // label8
             // 
@@ -329,7 +328,7 @@ namespace BitrateCalc
             this.frames.Size = new System.Drawing.Size(80, 21);
             this.frames.TabIndex = 5;
             this.frames.ThousandsSeparator = true;
-            this.frames.ValueChanged += new System.EventHandler(this.textField_TextChanged);
+            this.frames.ValueChanged += new System.EventHandler(this.frames_Changed);
             // 
             // bframes
             // 
@@ -395,11 +394,16 @@ namespace BitrateCalc
             0,
             0,
             0});
+            this.seconds.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
             this.seconds.Name = "seconds";
             this.seconds.Size = new System.Drawing.Size(45, 21);
             this.seconds.TabIndex = 3;
             this.seconds.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.seconds.ValueChanged += new System.EventHandler(this.time_ValueChanged);
+            this.seconds.ValueChanged += new System.EventHandler(this.time_Changed);
             // 
             // minutes
             // 
@@ -409,11 +413,16 @@ namespace BitrateCalc
             0,
             0,
             0});
+            this.minutes.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
             this.minutes.Name = "minutes";
             this.minutes.Size = new System.Drawing.Size(45, 21);
             this.minutes.TabIndex = 2;
             this.minutes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.minutes.ValueChanged += new System.EventHandler(this.time_ValueChanged);
+            this.minutes.ValueChanged += new System.EventHandler(this.time_Changed);
             // 
             // hours
             // 
@@ -427,7 +436,7 @@ namespace BitrateCalc
             this.hours.Size = new System.Drawing.Size(45, 21);
             this.hours.TabIndex = 1;
             this.hours.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.hours.ValueChanged += new System.EventHandler(this.time_ValueChanged);
+            this.hours.ValueChanged += new System.EventHandler(this.time_Changed);
             // 
             // complexity
             // 
@@ -479,7 +488,7 @@ namespace BitrateCalc
             this.totalSeconds.TabIndex = 1;
             this.totalSeconds.ThousandsSeparator = true;
             this.totalSeconds.Visible = false;
-            this.totalSeconds.ValueChanged += new System.EventHandler(this.textField_TextChanged);
+            this.totalSeconds.ValueChanged += new System.EventHandler(this.totalSeconds_Changed);
             // 
             // timeText
             // 
@@ -510,7 +519,7 @@ namespace BitrateCalc
             // 
             this.sizeGroupbox.Controls.Add(this.videoSize);
             this.sizeGroupbox.Controls.Add(this.totalSize);
-            this.sizeGroupbox.Controls.Add(this.linkLabel1);
+            this.sizeGroupbox.Controls.Add(this.presetLink);
             this.sizeGroupbox.Controls.Add(this.qEstRadio);
             this.sizeGroupbox.Controls.Add(this.qest);
             this.sizeGroupbox.Controls.Add(this.bppRadio);
@@ -524,15 +533,38 @@ namespace BitrateCalc
             this.sizeGroupbox.TabStop = false;
             this.sizeGroupbox.Text = "Calculate By";
             // 
-            // linkLabel1
+            // videoSize
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(19, 249);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(65, 13);
-            this.linkLabel1.TabIndex = 22;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Preset: DVD";
+            this.videoSize.AutoSize = true;
+            this.videoSize.Location = new System.Drawing.Point(19, 45);
+            this.videoSize.Name = "videoSize";
+            this.videoSize.ReadOnly = true;
+            this.videoSize.Size = new System.Drawing.Size(122, 24);
+            this.videoSize.SizeUnit = BitrateCalc.SizeUnit.Kbps;
+            this.videoSize.TabIndex = 24;
+            this.videoSize.ValueChanged += new System.EventHandler(this.value_Changed);
+            // 
+            // totalSize
+            // 
+            this.totalSize.AutoSize = true;
+            this.totalSize.Location = new System.Drawing.Point(19, 220);
+            this.totalSize.Name = "totalSize";
+            this.totalSize.ReadOnly = false;
+            this.totalSize.Size = new System.Drawing.Size(122, 24);
+            this.totalSize.SizeUnit = BitrateCalc.SizeUnit.GB;
+            this.totalSize.TabIndex = 23;
+            this.totalSize.ValueChanged += new System.EventHandler(this.value_Changed);
+            // 
+            // presetLink
+            // 
+            this.presetLink.AutoSize = true;
+            this.presetLink.Location = new System.Drawing.Point(19, 249);
+            this.presetLink.Name = "presetLink";
+            this.presetLink.Size = new System.Drawing.Size(87, 13);
+            this.presetLink.TabIndex = 22;
+            this.presetLink.TabStop = true;
+            this.presetLink.Text = "Preset: (custom)";
+            this.presetLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.presetLink_LinkClicked);
             // 
             // qEstRadio
             // 
@@ -566,7 +598,7 @@ namespace BitrateCalc
             0,
             0,
             131072});
-            this.qest.ValueChanged += new System.EventHandler(this.textField_TextChanged);
+            this.qest.ValueChanged += new System.EventHandler(this.value_Changed);
             // 
             // bppRadio
             // 
@@ -600,7 +632,7 @@ namespace BitrateCalc
             0,
             0,
             131072});
-            this.bpp.ValueChanged += new System.EventHandler(this.textField_TextChanged);
+            this.bpp.ValueChanged += new System.EventHandler(this.value_Changed);
             // 
             // fileSizeRadio
             // 
@@ -755,27 +787,10 @@ namespace BitrateCalc
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // videoSize
+            // presetMenu
             // 
-            this.videoSize.AutoSize = true;
-            this.videoSize.Location = new System.Drawing.Point(19, 45);
-            this.videoSize.Name = "videoSize";
-            this.videoSize.ReadOnly = true;
-            this.videoSize.Size = new System.Drawing.Size(122, 24);
-            this.videoSize.SizeUnit = BitrateCalc.SizeUnit.Kbps;
-            this.videoSize.TabIndex = 24;
-            this.videoSize.ValueChanged += new System.EventHandler(this.textField_TextChanged);
-            // 
-            // totalSize
-            // 
-            this.totalSize.AutoSize = true;
-            this.totalSize.Location = new System.Drawing.Point(19, 220);
-            this.totalSize.Name = "totalSize";
-            this.totalSize.ReadOnly = false;
-            this.totalSize.Size = new System.Drawing.Size(122, 24);
-            this.totalSize.SizeUnit = BitrateCalc.SizeUnit.GB;
-            this.totalSize.TabIndex = 23;
-            this.totalSize.ValueChanged += new System.EventHandler(this.textField_TextChanged);
+            this.presetMenu.Name = "presetMenu";
+            this.presetMenu.Size = new System.Drawing.Size(61, 4);
             // 
             // CalcForm
             // 
@@ -819,7 +834,7 @@ namespace BitrateCalc
 
         private ComboBox framerate;
         private Label label1;
-        private LinkLabel linkLabel1;
+        private LinkLabel presetLink;
         private SizeBitrateBox videoSize;
         private SizeBitrateBox totalSize;
         private LinkLabel helpLink;
@@ -828,5 +843,6 @@ namespace BitrateCalc
         private ToolStripMenuItem checkForUpdatesNowToolStripMenuItem;
         private ToolStripMenuItem visitWebpageToolStripMenuItem;
         private ToolStripMenuItem aboutToolStripMenuItem;
+        private ContextMenuStrip presetMenu;
     }
 }

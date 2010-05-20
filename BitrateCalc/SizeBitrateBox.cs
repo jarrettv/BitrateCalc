@@ -22,6 +22,8 @@ namespace BitrateCalc
             set { NumUpDown.ReadOnly = value; }
         }
 
+        public bool IsBitrateUnit { get { return (int)unit >= 100; } }
+
         public SizeLength SizeLength
         {
             get { return sizeLength; }
@@ -35,6 +37,8 @@ namespace BitrateCalc
                     unit == SizeUnit.Kbps ? (decimal)sizeLength.Kbps :
                     unit == SizeUnit.Mbps ? (decimal)sizeLength.Mbps : 
                     (decimal)sizeLength.Bytes;
+                //if (unit == SizeUnit.Kbps || unit == SizeUnit.Mbps)
+                //    if (sizeLength.UnknownLength) NumUpDown.Text = string.Empty;
             }
         }
 
@@ -113,13 +117,22 @@ namespace BitrateCalc
                     sizeLength = sizeLength.ToNewSize((long)(NumUpDown.Value * 1024M * 1024M * 1024M));
                     break;
                 case SizeUnit.Kbps:
-                    sizeLength = sizeLength.ToNewSize((long)(NumUpDown.Value / 8M * 1000M * (decimal)sizeLength.Length.TotalSeconds));
+                    if (sizeLength.Length.TotalSeconds > 0)
+                        sizeLength = sizeLength.ToNewSize((long)(NumUpDown.Value / 8M * 1000M * (decimal)sizeLength.Length.TotalSeconds));
+                    //else
+                    //    sizeLength = new SizeLength((long)(NumUpDown.Value / 8M * 1000M), TimeSpan.FromTicks(1));
                     break;
                 case SizeUnit.Mbps:
-                    sizeLength = sizeLength.ToNewSize((long)(NumUpDown.Value / 8M * 1000000M * (decimal)sizeLength.Length.TotalSeconds));
+                    if (sizeLength.Length.TotalSeconds > 0)
+                        sizeLength = sizeLength.ToNewSize((long)(NumUpDown.Value / 8M * 1000000M * (decimal)sizeLength.Length.TotalSeconds));
                     break;
             }
             if (ValueChanged != null) ValueChanged(sender, e);
+        }
+
+        private void NumUpDown_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) NumUpDown_ValueChanged(sender, e);
         }
     }
 }

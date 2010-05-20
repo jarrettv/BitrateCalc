@@ -38,12 +38,9 @@ namespace BitrateCalc
 	/// </summary>
 	partial class CalcForm : System.Windows.Forms.Form
 	{
-        private bool calculating = false;
-        private bool isUpdating = false;
-
         protected TimeSpan VideoDuration
         {
-            get { return new TimeSpan((long)totalSeconds.Value * TimeSpan.TicksPerSecond); }
+            get { return TimeSpan.FromSeconds((double)totalSeconds.Value); }
         }
         
         #region Event Handlers
@@ -87,132 +84,43 @@ namespace BitrateCalc
                 TagIndexes();
             };
 
+            var items = PresetSize.Presets.Select(p => new ToolStripMenuItem(p.Preset, null, new EventHandler(preset_Changed)) 
+            { 
+                Tag = p.Size
+            });
+            presetMenu.Items.AddRange(items.ToArray());
+
             AddAudio();
         }
 
-        private void value_Changed(object sendor, EventArgs e)
+        private void preset_Changed(object sender, EventArgs e)
+        {
+            var t = (ToolStripItem)sender;
+            totalSize.SizeLength = totalSize.SizeLength.ToNewSize((long)t.Tag);
+            UpdatePresetLabel();
+        }
+
+        private void value_Changed(object sender, EventArgs e)
         {
             Calculate();
         }
 
-		private void textField_TextChanged(object sender, System.EventArgs e)
+		private void time_Changed(object sender, System.EventArgs e)
 		{
-            lock(this)
-            {
-                if(sender is NumericUpDown && !this.isUpdating)
-                {
-                    this.isUpdating = true;
-                    NumericUpDown tb = (NumericUpDown)sender;
-                    decimal value = tb.Value;
-                    if (tb == totalSeconds)
-                    {
-                        int hours = (int)value / 3600;
-                        value -= hours * 3600;
-                        int minutes = (int)value / 60;
-                        value -= minutes * 60;
-                        if (hours <= this.hours.Maximum)
-                        {
-                            this.hours.Value = hours;
-                            this.minutes.Value = minutes;
-                            this.seconds.Value = value;
-                        }
-                        else // We set to max available time and set frames accordingly
-                        {
-                            this.hours.Value = this.hours.Maximum;
-                            this.minutes.Value = this.minutes.Maximum - 1; //59 mins
-                            this.seconds.Value = this.seconds.Maximum - 1; //59 seconds
-                        }
-                        OnVideoDurationChanged();
-                        UpdateTotalSeconds();
-                        UpdateTotalFrames();
-                    }
-                    else if (tb == frames)
-                    {
-                        int secs = (int)(value / decimal.Parse(framerate.Text));
-                        totalSeconds.Text = secs.ToString();
-                        int hours = secs / 3600;
-                        secs -= hours * 3600;
-                        int minutes = secs / 60;
-                        secs -= minutes * 60;
-                        if (hours < this.hours.Maximum)
-                        {
-                            this.hours.Value = hours;
-                            this.minutes.Value = minutes;
-                            this.seconds.Value = secs;
-                        }
-                        else //Set to max available time and set frames accordingly
-                        {
-                            this.hours.Value = this.hours.Maximum;
-                            this.minutes.Value = this.minutes.Maximum - 1; //59 minutes
-                            this.seconds.Value = this.seconds.Maximum - 1; //59 seconds
-                            UpdateTotalFrames();
-                        }
-                        UpdateTotalSeconds();
-                        OnVideoDurationChanged();
-                    }
-                    this.isUpdating = false;
-                }
-                Calculate();
-            }
+            TimeSpan duration = new TimeSpan((int)hours.Value, (int)minutes.Value, (int)seconds.Value);
+            OnVideoDurationChanged(duration);
 		}
 
-        private void time_ValueChanged(object sender, System.EventArgs e)
+        private void totalSeconds_Changed(object sender, System.EventArgs e)
         {
-            lock (this)
-            {
-                if (isUpdating)
-                    return;
+            TimeSpan duration = TimeSpan.FromSeconds((double)totalSeconds.Value);
+            OnVideoDurationChanged(duration);
+        }
 
-                this.isUpdating = true;
-                NumericUpDown ud = (NumericUpDown)sender;
-
-                if (this.hours.Value.Equals(this.hours.Maximum))
-                {
-                    if (this.minutes.Value == 60)
-                    {
-                        this.minutes.Value = 59;
-                        UpdateTotalSeconds();
-                        UpdateTotalFrames();
-                        isUpdating = false;
-                        return; // we can't increase the time
-                    }
-                    else if (this.seconds.Value == 60 && this.minutes.Value == 59)
-                    {
-                        this.seconds.Value = 59;
-                        UpdateTotalSeconds();
-                        UpdateTotalFrames();
-                        isUpdating = false;
-                        return; // we can't increase the time
-                    }
-                }
-                if (ud.Value == 60) // time to wrap
-                {
-                    ud.Value = 0;
-                    if (ud == seconds)
-                    {
-                        if (minutes.Value == 59)
-                        {
-                            minutes.Value = 0;
-                            if (!this.hours.Value.Equals(this.hours.Maximum))
-                                hours.Value += 1;
-                        }
-                        else
-                            minutes.Value += 1;
-                    }
-                    else if (ud == minutes)
-                    {
-                        minutes.Value = 0;
-                        if (this.hours.Value < this.hours.Maximum)
-                            hours.Value += 1;
-                    }
-                }
-                UpdateTotalSeconds();
-                UpdateTotalFrames();
-                OnVideoDurationChanged();
-                Calculate();
-
-                this.isUpdating = false;
-            }
+        private void frames_Changed(object sender, EventArgs e)
+        {
+            TimeSpan duration = TimeSpan.FromSeconds((double)frames.Value / double.Parse(framerate.Text));
+            OnVideoDurationChanged(duration);
         }
 
 		/// <summary>
@@ -224,50 +132,29 @@ namespace BitrateCalc
 		{
 			RadioButton rb = (RadioButton)sender;
 			if (rb.Checked)
-			{
-                if (rb == averageBitrateRadio)
-                {
-                    totalSize.ReadOnly = true;
-                    videoSize.ReadOnly = false;
-                    bpp.ReadOnly = true;
-                    qest.ReadOnly = true;
-                }
-                else if (rb == bppRadio)
-                {
-                    totalSize.ReadOnly = true;
-                    videoSize.ReadOnly = true;
-                    bpp.ReadOnly = false;
-                    qest.ReadOnly = true;
-                }
-                else if (rb == qEstRadio)
-                {
-                    totalSize.ReadOnly = true;
-                    videoSize.ReadOnly = true;
-                    bpp.ReadOnly = true;
-                    qest.ReadOnly = false;
-                }
-                else
-                {
-                    totalSize.ReadOnly = false;
-                    videoSize.ReadOnly = true;
-                    bpp.ReadOnly = true;
-                    qest.ReadOnly = true;
-                }
+            {
+                videoSize.ReadOnly = !averageBitrateRadio.Checked;
+                bpp.ReadOnly = !bppRadio.Checked;
+                qest.ReadOnly = !qEstRadio.Checked;
+                totalSize.ReadOnly = !fileSizeRadio.Checked;
+                presetLink.Enabled = !totalSize.ReadOnly;
 			}
 		}
 
         private void framerate_Changed(object sender, EventArgs e)
         {
-            if (!isUpdating)
+            frames.ValueChanged -= new EventHandler(frames_Changed);
+            try
             {
-                isUpdating = true;
                 double fps = double.Parse(framerate.Text);
-                int length = (int)totalSeconds.Value;
-                int numberOfFrames = (int)(length * fps);
-                frames.Value = numberOfFrames;
+                frames.Value = (int)(VideoDuration.TotalSeconds * fps);
                 Calculate();
-                isUpdating = false;
             }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            frames.ValueChanged += new EventHandler(frames_Changed);
         }
 
         private void addExtraToolStripMenuItem_Click(object sender, EventArgs e)
@@ -345,10 +232,71 @@ namespace BitrateCalc
         {
             System.Diagnostics.Process.Start("http://mewiki.project357.com/wiki/MeGUI/Tools/Bitrate_Calculator");
         }
+        
+        private void presetLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            presetMenu.Show(presetLink, 0, presetLink.Height);
+        }
 
         #endregion
 
-        protected void OnVideoDurationChanged()
+        protected void UpdatePresetLabel()
+        {
+            presetLink.Text = "Preset: (custom)";
+            foreach (PresetSize preset in PresetSize.Presets)
+            {
+                if ((long)Math.Round(totalSize.SizeLength.MB) * 1024L * 1024L == preset.Size)
+                {
+                    presetLink.Text = "Preset: " + preset.Preset;
+                    break;
+                }
+            }
+        }
+
+        protected void OnVideoDurationChanged(TimeSpan duration)
+        {
+            if (duration < TimeSpan.Zero) duration = TimeSpan.Zero;
+
+            hours.ValueChanged -= new EventHandler(time_Changed);
+            minutes.ValueChanged -= new EventHandler(time_Changed);
+            seconds.ValueChanged -= new EventHandler(time_Changed);
+            totalSeconds.ValueChanged -= new EventHandler(totalSeconds_Changed);
+            frames.ValueChanged -= new EventHandler(frames_Changed);
+            videoSize.ValueChanged -= new EventHandler(value_Changed);
+            totalSize.ValueChanged -= new EventHandler(value_Changed);
+
+            try
+            {
+                hours.Value = duration.Hours;
+                minutes.Value = duration.Minutes;
+                seconds.Value = duration.Seconds;
+                totalSeconds.Value = (decimal)duration.TotalSeconds;
+                timeText.Text = string.Format("{0}h {1}m {2}s", duration.Hours, duration.Minutes, duration.Seconds);
+                frames.Value = Math.Ceiling((decimal)duration.TotalSeconds * decimal.Parse(framerate.Text));
+
+                // only specify duration on the item being calculated
+                if (averageBitrateRadio.Checked) videoSize.SizeLength = videoSize.SizeLength.ToNewLength(duration, videoSize.IsBitrateUnit);
+                if (fileSizeRadio.Checked) totalSize.SizeLength = totalSize.SizeLength.ToNewLength(duration, videoSize.IsBitrateUnit);
+
+                UpdateAudioExtraDurations(duration);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+            }
+
+            hours.ValueChanged += new EventHandler(time_Changed);
+            minutes.ValueChanged += new EventHandler(time_Changed);
+            seconds.ValueChanged += new EventHandler(time_Changed);
+            totalSeconds.ValueChanged += new EventHandler(totalSeconds_Changed);
+            frames.ValueChanged += new EventHandler(frames_Changed);
+            videoSize.ValueChanged += new EventHandler(value_Changed);
+            totalSize.ValueChanged += new EventHandler(value_Changed);
+
+            Calculate();
+        }
+
+        private void UpdateAudioExtraDurations(TimeSpan duration)
         {
             foreach (Control c in audioExtraFlow.Controls)
             {
@@ -357,51 +305,27 @@ namespace BitrateCalc
                     AudioTrackSizeTab a = (AudioTrackSizeTab)c;
                     if (a.AudioTrack != null)
                     {
-                        a.AudioTrack = new AudioTrack(VideoDuration)
+                        a.AudioTrack = new AudioTrack(duration)
                         {
                             RawBytes = a.AudioTrack.RawBytes,
                             SamplingRate = a.AudioTrack.SamplingRate,
                             AudioCodec = a.AudioTrack.AudioCodec
                         };
                     }
-                    else
-                    {
-                        a.AudioTrack = new AudioTrack(VideoDuration);
-                    }
+                    else a.AudioTrack = new AudioTrack(duration);
                 }
                 else if (c is ExtraSizeTab)
                 {
                     ExtraSizeTab a = (ExtraSizeTab)c;
                     if (a.ExtraTrack != null)
                     {
-                        a.ExtraTrack = new ExtraTrack(VideoDuration)
-                        {
-                            RawBytes = a.ExtraTrack.RawBytes
-                        };
+                        a.ExtraTrack = new ExtraTrack(duration) { RawBytes = a.ExtraTrack.RawBytes };
                     }
-                    else
-                    {
-                        a.ExtraTrack = new ExtraTrack(VideoDuration);
-                    }
+                    else a.ExtraTrack = new ExtraTrack(duration);
                 }
             }
         }
-
-        protected void UpdateTotalFrames()
-        {
-            int secs = (int)totalSeconds.Value;
-            double fps = double.Parse(framerate.Text);
-            int frameNumber = (int)((double)secs * fps);
-            frames.Value = frameNumber;
-        }
-
-        protected void UpdateTotalSeconds()
-        {
-            int secs = (int)this.hours.Value * 3600 + (int)this.minutes.Value * 60 + (int)this.seconds.Value;
-            totalSeconds.Value = secs;
-            timeText.Text = string.Format("{0}h {1}m {2}s", this.hours.Value, this.minutes.Value, this.seconds.Value);
-        }
-
+        
         protected AudioTrackSizeTab AddAudio()
         {
             AudioTrackSizeTab a = new AudioTrackSizeTab();
@@ -479,8 +403,11 @@ namespace BitrateCalc
         /// </summary>
         protected void Calculate()
         {
-            if (calculating) return;
-            calculating = true;
+            videoSize.ValueChanged -= new EventHandler(value_Changed);
+            bpp.ValueChanged -= new EventHandler(value_Changed);
+            qest.ValueChanged -= new EventHandler(value_Changed);
+            totalSize.ValueChanged -= new EventHandler(value_Changed);
+
             try
             {
                 VideoTrack video = new VideoTrack((long)frames.Value, float.Parse(framerate.Text));
@@ -516,6 +443,7 @@ namespace BitrateCalc
                 videoSize.SizeLength = video.SizeLength;
                 bpp.Value = (decimal)data.BitsPerPixel;
                 qest.Value = (decimal)data.QualityEstimate;
+                UpdatePresetLabel();
             }
             catch (Exception ex)
             {
@@ -545,7 +473,10 @@ namespace BitrateCalc
                     totalSize.SizeLength = SizeLength.Zero;
                 }
             }
-            calculating = false;
+            videoSize.ValueChanged += new EventHandler(value_Changed);
+            bpp.ValueChanged += new EventHandler(value_Changed);
+            qest.ValueChanged += new EventHandler(value_Changed);
+            totalSize.ValueChanged += new EventHandler(value_Changed);
         }
 
         private void ShowUpdateDialog(Version appVersion, Version newVersion, XDocument doc)
