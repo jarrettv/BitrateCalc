@@ -14,5 +14,62 @@
     <Setting Name="AutoCheckForUpdate" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="VideoDuration" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">02:00:00</Value>
+    </Setting>
+    <Setting Name="VideoFramerate" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">23.976</Value>
+    </Setting>
+    <Setting Name="VideoCodec" Type="System.String" Scope="User">
+      <Value Profile="(Default)">H264</Value>
+    </Setting>
+    <Setting Name="VideoComplexity" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">75</Value>
+    </Setting>
+    <Setting Name="VideoDimension" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1280, 720</Value>
+    </Setting>
+    <Setting Name="Container" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Mkv</Value>
+    </Setting>
+    <Setting Name="CalcBy" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="TotalBytes" Type="System.Int64" Scope="User">
+      <Value Profile="(Default)">4699717632</Value>
+    </Setting>
+    <Setting Name="VideoBytes" Type="System.Int64" Scope="User">
+      <Value Profile="(Default)">4581111808</Value>
+    </Setting>
+    <Setting Name="AudioBytes" Type="System.Int64" Scope="User">
+      <Value Profile="(Default)">403200000</Value>
+    </Setting>
+    <Setting Name="TotalSizeUnit" Type="System.String" Scope="User">
+      <Value Profile="(Default)">GB</Value>
+    </Setting>
+    <Setting Name="VideoSizeUnit" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Kbps</Value>
+    </Setting>
+    <Setting Name="AudioSizeUnit" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Kbps</Value>
+    </Setting>
+    <Setting Name="AudioCodec" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Ac3</Value>
+    </Setting>
+    <Setting Name="ExtraSizeUnit" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MB</Value>
+    </Setting>
+    <Setting Name="VideoHasBframes" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="BitsPerPixel" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">0.216</Value>
+    </Setting>
+    <Setting Name="QualityEstimate" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">6.69</Value>
+    </Setting>
+    <Setting Name="ShowTotalSeconds" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

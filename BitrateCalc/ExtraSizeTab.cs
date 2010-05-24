@@ -25,6 +25,9 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
+using System.Diagnostics;
+using BitrateCalc.Properties;
 
 namespace BitrateCalc
 {
@@ -45,10 +48,13 @@ namespace BitrateCalc
             }
         }
 
-        public ExtraSizeTab()
-            : base()
+        public ExtraSizeTab() : this(TimeSpan.Zero) { }
+
+        public ExtraSizeTab(TimeSpan duration) : base()
         {
             InitializeComponent();
+            this.ExtraTrack = new ExtraTrack(duration);
+            this.size.SizeUnit = (SizeUnit)Enum.Parse(typeof(SizeUnit), Settings.Default.ExtraSizeUnit);
         }
 
         protected virtual void OnValueChanged()
@@ -58,10 +64,18 @@ namespace BitrateCalc
 
         protected virtual void SelectFile(string file)
         {
-            //FileSize f = FileSize.Of2(file) ?? FileSize.Empty;
-            ////size.CertainValue = f;
-            //size.Text = f.ToString();
-            //name.Text = System.IO.Path.GetFileName(file);
+            try
+            {
+                var s = size.SizeLength.ToNewSize(new FileInfo(file).Length);
+                size.SizeUnit = s.MB > 1024 ? SizeUnit.GB : SizeUnit.MB;
+                size.SizeLength = s;
+                name.Text = Path.GetFileName(file);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void selectButton_Click(object sender, EventArgs e)

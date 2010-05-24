@@ -49,21 +49,49 @@ namespace BitrateCalc
         {
             if (Settings.Default.AutoCheckForUpdate) ThreadPool.QueueUserWorkItem((w) => Updater.CheckForUpdate(ShowUpdateDialog));
 
-            this.framerate.SelectedIndex = 0;
+            if (Settings.Default.ShowTotalSeconds) picTime_Click(null, null);
+
+            this.framerate.Text = Settings.Default.VideoFramerate.ToString();
+
             this.videoCodec.Items.AddRange(Enum.GetValues(typeof(VideoCodec)).Cast<object>().ToArray());
-            this.videoCodec.SelectedItem = VideoCodec.H264; // TODO: get from settings
-            this.container.Items.AddRange(Enum.GetValues(typeof(Container)).Cast<object>().ToArray());
-            this.container.SelectedItem = BitrateCalc.Container.Mkv; // TODO: get from settings
+            this.videoCodec.SelectedItem = Enum.Parse(typeof(VideoCodec), Settings.Default.VideoCodec);
+            this.bframes.Checked = Settings.Default.VideoHasBframes;
 
             // set complexity from settings
             this.complexity.Minimum = 0;
             this.complexity.Maximum = 100;
-            this.complexity.Value = (Settings.Default.MinComplexity + Settings.Default.MaxComplexity) / 2;
+            if (Settings.Default.VideoComplexity < Settings.Default.MinComplexity || Settings.Default.VideoComplexity > Settings.Default.MaxComplexity)
+                this.complexity.Value = (Settings.Default.MinComplexity + Settings.Default.MaxComplexity) / 2;
+            else 
+                this.complexity.Value = Settings.Default.VideoComplexity;
             this.complexity.Minimum = Settings.Default.MinComplexity;
             this.complexity.Maximum = Settings.Default.MaxComplexity;
 
-            // wire the input boxes to auto-select text on focus
-            AddAutoSelectHandler(this);
+            this.width.Value = Settings.Default.VideoDimension.Width;
+            this.height.Value = Settings.Default.VideoDimension.Height;
+
+            this.container.Items.AddRange(Enum.GetValues(typeof(Container)).Cast<object>().ToArray());
+            this.container.SelectedItem = Enum.Parse(typeof(Container), Settings.Default.Container);
+
+            switch (Settings.Default.CalcBy)
+            {
+                case 0: averageBitrateRadio.Checked = true;
+                    videoSize.SizeLength = videoSize.SizeLength.ToNewSize(Settings.Default.VideoBytes);
+                    break;
+                case 1: bppRadio.Checked = true;
+                    bpp.Value = (decimal)Settings.Default.BitsPerPixel;
+                    break;
+                case 2: qEstRadio.Checked = true;
+                    qest.Value = (decimal)Settings.Default.QualityEstimate;
+                    break;
+                default: fileSizeRadio.Checked = true;
+                    totalSize.SizeLength = totalSize.SizeLength.ToNewSize(Settings.Default.TotalBytes);
+                    break;
+            }
+
+            videoSize.SizeUnit = (SizeUnit)Enum.Parse(typeof(SizeUnit), Settings.Default.VideoSizeUnit);
+            totalSize.SizeUnit = (SizeUnit)Enum.Parse(typeof(SizeUnit), Settings.Default.TotalSizeUnit);
+
 
             // set focus of calculate by
             this.videoSize.Click += (s, args) => videoSize.Focus();
@@ -84,6 +112,7 @@ namespace BitrateCalc
                 TagIndexes();
             };
 
+            // add presets to the preset menu
             var items = PresetSize.Presets.Select(p => new ToolStripMenuItem(p.Preset, null, new EventHandler(preset_Changed)) 
             { 
                 Tag = p.Size
@@ -91,13 +120,19 @@ namespace BitrateCalc
             presetMenu.Items.AddRange(items.ToArray());
 
             AddAudio();
+
+            OnVideoDurationChanged(Settings.Default.VideoDuration);
+            Calculate();
+
+            // wire the input boxes to auto-select text on focus
+            AddAutoSelectHandler(this);
         }
 
         private void preset_Changed(object sender, EventArgs e)
         {
             var t = (ToolStripItem)sender;
             totalSize.SizeLength = totalSize.SizeLength.ToNewSize((long)t.Tag);
-            UpdatePresetLabel();
+            UpdatePresetLabel(t.Text);
         }
 
         private void value_Changed(object sender, EventArgs e)
@@ -109,18 +144,21 @@ namespace BitrateCalc
 		{
             TimeSpan duration = new TimeSpan((int)hours.Value, (int)minutes.Value, (int)seconds.Value);
             OnVideoDurationChanged(duration);
+            Calculate();
 		}
 
         private void totalSeconds_Changed(object sender, System.EventArgs e)
         {
             TimeSpan duration = TimeSpan.FromSeconds((double)totalSeconds.Value);
             OnVideoDurationChanged(duration);
+            Calculate();
         }
 
         private void frames_Changed(object sender, EventArgs e)
         {
             TimeSpan duration = TimeSpan.FromSeconds((double)frames.Value / double.Parse(framerate.Text));
             OnVideoDurationChanged(duration);
+            Calculate();
         }
 
 		/// <summary>
@@ -240,8 +278,14 @@ namespace BitrateCalc
 
         #endregion
 
-        protected void UpdatePresetLabel()
+        protected void UpdatePresetLabel(string presetName)
         {
+            if (presetName != null)
+            {
+                presetLink.Text = "Preset: " + presetName;
+                return;
+            }
+
             presetLink.Text = "Preset: (custom)";
             foreach (PresetSize preset in PresetSize.Presets)
             {
@@ -275,8 +319,8 @@ namespace BitrateCalc
                 frames.Value = Math.Ceiling((decimal)duration.TotalSeconds * decimal.Parse(framerate.Text));
 
                 // only specify duration on the item being calculated
-                if (averageBitrateRadio.Checked) videoSize.SizeLength = videoSize.SizeLength.ToNewLength(duration, videoSize.IsBitrateUnit);
-                if (fileSizeRadio.Checked) totalSize.SizeLength = totalSize.SizeLength.ToNewLength(duration, videoSize.IsBitrateUnit);
+                if (averageBitrateRadio.Checked) videoSize.SizeLength = videoSize.SizeLength.ToNewLength(duration, !videoSize.IsBitrateUnit);
+                if (fileSizeRadio.Checked) totalSize.SizeLength = totalSize.SizeLength.ToNewLength(duration, !totalSize.IsBitrateUnit);
 
                 UpdateAudioExtraDurations(duration);
             }
@@ -292,8 +336,6 @@ namespace BitrateCalc
             frames.ValueChanged += new EventHandler(frames_Changed);
             videoSize.ValueChanged += new EventHandler(value_Changed);
             totalSize.ValueChanged += new EventHandler(value_Changed);
-
-            Calculate();
         }
 
         private void UpdateAudioExtraDurations(TimeSpan duration)
@@ -328,18 +370,16 @@ namespace BitrateCalc
         
         protected AudioTrackSizeTab AddAudio()
         {
-            AudioTrackSizeTab a = new AudioTrackSizeTab();
+            AudioTrackSizeTab a = new AudioTrackSizeTab(VideoDuration);
             a.ValueChanged += (o, s) => Calculate();
-            a.AudioTrack = new AudioTrack(VideoDuration);
             audioExtraFlow.Controls.Add(a);
             return a;
         }
 
         protected ExtraSizeTab AddExtra()
         {
-            ExtraSizeTab a = new ExtraSizeTab();
+            ExtraSizeTab a = new ExtraSizeTab(VideoDuration);
             a.ValueChanged += (o, s) => Calculate();
-            a.ExtraTrack = new ExtraTrack(VideoDuration);
             audioExtraFlow.Controls.Add(a);
             return a;
         }
@@ -443,7 +483,7 @@ namespace BitrateCalc
                 videoSize.SizeLength = video.SizeLength;
                 bpp.Value = (decimal)data.BitsPerPixel;
                 qest.Value = (decimal)data.QualityEstimate;
-                UpdatePresetLabel();
+                UpdatePresetLabel(null);
             }
             catch (Exception ex)
             {

@@ -26,6 +26,9 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Linq;
+using System.IO;
+using System.Diagnostics;
+using BitrateCalc.Properties;
 
 namespace BitrateCalc
 {
@@ -33,7 +36,7 @@ namespace BitrateCalc
     {
         private AudioTrack track = null;
 
-        protected readonly string Filter = "All Files (*.*)|*.*";
+        protected readonly string Filter = "Audio Files|*.ac3;*.dts;*.aac;*.ogg;*.mp3;*.flac;*.wav;*.mp2;*.eac3;*.truehd;*.dtsma|All Files (*.*)|*.*";
 
         public event EventHandler ValueChanged;
 
@@ -48,10 +51,18 @@ namespace BitrateCalc
             }
         }
 
-        public AudioTrackSizeTab() : base()
+        public AudioTrackSizeTab() : this(TimeSpan.Zero) { }
+
+        public AudioTrackSizeTab(TimeSpan duration) : base()
         {
             InitializeComponent();
             this.audioCodec.Items.AddRange(Enum.GetValues(typeof(AudioCodec)).Cast<object>().ToArray());
+            this.AudioTrack = new AudioTrack(duration)
+            {
+                AudioCodec = (AudioCodec)Enum.Parse(typeof(AudioCodec), Settings.Default.AudioCodec),
+                RawBytes = Settings.Default.AudioBytes
+            };
+            size.SizeUnit = (SizeUnit)Enum.Parse(typeof(SizeUnit), Settings.Default.AudioSizeUnit);
         }
                 
         protected virtual void OnValueChanged()
@@ -61,30 +72,22 @@ namespace BitrateCalc
 
         protected virtual void SelectAudioFile(string file)
         {
-            //FileSize f = FileSize.Of2(file) ?? FileSize.Empty;
-            ////size.CertainValue = f;
-            //size.Text = f.ToString();
-            //name.Text = System.IO.Path.GetFileName(file);
-
-            //AudioType aud2Type = VideoUtil.guessAudioType(file);
-            //if (audio1Type.Items.Contains(aud2Type))
-            //    audio1Type.SelectedItem = aud2Type;
-
-            //MediaInfo info;
-            //try
-            //{
-            //    info = new MediaInfo(file);
-            //    MediaInfoWrapper.AudioTrack atrack = info.Audio[0];
-            //    // this.length = atrack.Duration
-            //    //if (atrack.Format == "DTS" && (atrack.BitRate == "768000" || atrack.BitRate == "1536000"))
-            //    {
-            //        audio1Bitrate.Value = (Convert.ToInt32(atrack.BitRate) / 1000);
-            //    }
-            //}
-            //catch (Exception i)
-            //{
-            //    MessageBox.Show("The following error ocurred when trying to get Media info for file " + file + "\r\n" + i.Message, "Error parsing mediainfo data", MessageBoxButtons.OK);                
-            //}
+            try
+            {
+                // TODO: actually read file info
+                var s = size.SizeLength.ToNewSize(new FileInfo(file).Length);
+                size.SizeUnit = s.MB > 1024 ? SizeUnit.GB : SizeUnit.MB;
+                size.SizeLength = s;
+                name.Text = Path.GetFileName(file);
+                string ext = Path.GetExtension(file).Substring(1).ToLower();
+                audioCodec.SelectedItem = AudioCodecs.List.Where(a => a.ToString().ToLower()
+                    .StartsWith(ext)).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void selectButton_Click(object sender, EventArgs e)

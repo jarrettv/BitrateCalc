@@ -70,5 +70,233 @@ namespace BitrateCalc.Properties {
                 this["AutoCheckForUpdate"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("02:00:00")]
+        public global::System.TimeSpan VideoDuration {
+            get {
+                return ((global::System.TimeSpan)(this["VideoDuration"]));
+            }
+            set {
+                this["VideoDuration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("23.976")]
+        public float VideoFramerate {
+            get {
+                return ((float)(this["VideoFramerate"]));
+            }
+            set {
+                this["VideoFramerate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("H264")]
+        public string VideoCodec {
+            get {
+                return ((string)(this["VideoCodec"]));
+            }
+            set {
+                this["VideoCodec"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("75")]
+        public int VideoComplexity {
+            get {
+                return ((int)(this["VideoComplexity"]));
+            }
+            set {
+                this["VideoComplexity"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1280, 720")]
+        public global::System.Drawing.Size VideoDimension {
+            get {
+                return ((global::System.Drawing.Size)(this["VideoDimension"]));
+            }
+            set {
+                this["VideoDimension"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Mkv")]
+        public string Container {
+            get {
+                return ((string)(this["Container"]));
+            }
+            set {
+                this["Container"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int CalcBy {
+            get {
+                return ((int)(this["CalcBy"]));
+            }
+            set {
+                this["CalcBy"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4699717632")]
+        public long TotalBytes {
+            get {
+                return ((long)(this["TotalBytes"]));
+            }
+            set {
+                this["TotalBytes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4581111808")]
+        public long VideoBytes {
+            get {
+                return ((long)(this["VideoBytes"]));
+            }
+            set {
+                this["VideoBytes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("403200000")]
+        public long AudioBytes {
+            get {
+                return ((long)(this["AudioBytes"]));
+            }
+            set {
+                this["AudioBytes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("GB")]
+        public string TotalSizeUnit {
+            get {
+                return ((string)(this["TotalSizeUnit"]));
+            }
+            set {
+                this["TotalSizeUnit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Kbps")]
+        public string VideoSizeUnit {
+            get {
+                return ((string)(this["VideoSizeUnit"]));
+            }
+            set {
+                this["VideoSizeUnit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Kbps")]
+        public string AudioSizeUnit {
+            get {
+                return ((string)(this["AudioSizeUnit"]));
+            }
+            set {
+                this["AudioSizeUnit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Ac3")]
+        public string AudioCodec {
+            get {
+                return ((string)(this["AudioCodec"]));
+            }
+            set {
+                this["AudioCodec"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("MB")]
+        public string ExtraSizeUnit {
+            get {
+                return ((string)(this["ExtraSizeUnit"]));
+            }
+            set {
+                this["ExtraSizeUnit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool VideoHasBframes {
+            get {
+                return ((bool)(this["VideoHasBframes"]));
+            }
+            set {
+                this["VideoHasBframes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.216")]
+        public float BitsPerPixel {
+            get {
+                return ((float)(this["BitsPerPixel"]));
+            }
+            set {
+                this["BitsPerPixel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.69")]
+        public float QualityEstimate {
+            get {
+                return ((float)(this["QualityEstimate"]));
+            }
+            set {
+                this["QualityEstimate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowTotalSeconds {
+            get {
+                return ((bool)(this["ShowTotalSeconds"]));
+            }
+            set {
+                this["ShowTotalSeconds"] = value;
+            }
+        }
     }
 }

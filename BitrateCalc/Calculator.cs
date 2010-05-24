@@ -205,7 +205,7 @@ namespace BitrateCalc
                 samplesPerBlock = MP3BlockSize;
             else if (audioType == AudioCodec.Ac3)
                 samplesPerBlock = AC3BlockSize;
-            else if (audioType == AudioCodec.Vorbis)
+            else if (audioType == AudioCodec.OggVorbis)
             {
                 samplesPerBlock = VorbisBlockSize;
                 headerSize = mkvVorbisTrackHeaderSize;

@@ -203,7 +203,7 @@ namespace BitrateCalc
             this.framerate.Location = new System.Drawing.Point(255, 45);
             this.framerate.Name = "framerate";
             this.framerate.Size = new System.Drawing.Size(70, 21);
-            this.framerate.TabIndex = 29;
+            this.framerate.TabIndex = 4;
             this.framerate.TextChanged += new System.EventHandler(this.framerate_Changed);
             // 
             // label3
@@ -541,7 +541,8 @@ namespace BitrateCalc
             this.videoSize.ReadOnly = true;
             this.videoSize.Size = new System.Drawing.Size(122, 24);
             this.videoSize.SizeUnit = BitrateCalc.SizeUnit.Kbps;
-            this.videoSize.TabIndex = 24;
+            this.videoSize.TabIndex = 15;
+            this.videoSize.TabStop = false;
             this.videoSize.ValueChanged += new System.EventHandler(this.value_Changed);
             // 
             // totalSize
@@ -553,6 +554,7 @@ namespace BitrateCalc
             this.totalSize.Size = new System.Drawing.Size(122, 24);
             this.totalSize.SizeUnit = BitrateCalc.SizeUnit.GB;
             this.totalSize.TabIndex = 23;
+            this.totalSize.TabStop = false;
             this.totalSize.ValueChanged += new System.EventHandler(this.value_Changed);
             // 
             // presetLink
@@ -561,7 +563,7 @@ namespace BitrateCalc
             this.presetLink.Location = new System.Drawing.Point(19, 249);
             this.presetLink.Name = "presetLink";
             this.presetLink.Size = new System.Drawing.Size(87, 13);
-            this.presetLink.TabIndex = 22;
+            this.presetLink.TabIndex = 24;
             this.presetLink.TabStop = true;
             this.presetLink.Text = "Preset: (custom)";
             this.presetLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.presetLink_LinkClicked);
@@ -572,7 +574,7 @@ namespace BitrateCalc
             this.qEstRadio.Location = new System.Drawing.Point(16, 141);
             this.qEstRadio.Name = "qEstRadio";
             this.qEstRadio.Size = new System.Drawing.Size(103, 17);
-            this.qEstRadio.TabIndex = 17;
+            this.qEstRadio.TabIndex = 20;
             this.qEstRadio.TabStop = true;
             this.qEstRadio.Text = "Quality Estimate";
             this.qEstRadio.UseVisualStyleBackColor = true;
@@ -590,7 +592,7 @@ namespace BitrateCalc
             this.qest.Name = "qest";
             this.qest.ReadOnly = true;
             this.qest.Size = new System.Drawing.Size(70, 21);
-            this.qest.TabIndex = 17;
+            this.qest.TabIndex = 21;
             this.qest.TabStop = false;
             this.qest.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.qest.Value = new decimal(new int[] {
@@ -606,7 +608,7 @@ namespace BitrateCalc
             this.bppRadio.Location = new System.Drawing.Point(16, 83);
             this.bppRadio.Name = "bppRadio";
             this.bppRadio.Size = new System.Drawing.Size(86, 17);
-            this.bppRadio.TabIndex = 16;
+            this.bppRadio.TabIndex = 18;
             this.bppRadio.TabStop = true;
             this.bppRadio.Text = "Bits Per Pixel";
             this.bppRadio.UseVisualStyleBackColor = true;
@@ -624,7 +626,7 @@ namespace BitrateCalc
             this.bpp.Name = "bpp";
             this.bpp.ReadOnly = true;
             this.bpp.Size = new System.Drawing.Size(69, 21);
-            this.bpp.TabIndex = 16;
+            this.bpp.TabIndex = 19;
             this.bpp.TabStop = false;
             this.bpp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.bpp.Value = new decimal(new int[] {
@@ -642,7 +644,7 @@ namespace BitrateCalc
             this.fileSizeRadio.Location = new System.Drawing.Point(16, 199);
             this.fileSizeRadio.Name = "fileSizeRadio";
             this.fileSizeRadio.Size = new System.Drawing.Size(102, 17);
-            this.fileSizeRadio.TabIndex = 18;
+            this.fileSizeRadio.TabIndex = 22;
             this.fileSizeRadio.TabStop = true;
             this.fileSizeRadio.Text = "Total File Size";
             this.fileSizeRadio.CheckedChanged += new System.EventHandler(this.calculationMode_CheckedChanged);
@@ -741,7 +743,7 @@ namespace BitrateCalc
             this.helpLink.Location = new System.Drawing.Point(633, 14);
             this.helpLink.Name = "helpLink";
             this.helpLink.Size = new System.Drawing.Size(27, 13);
-            this.helpLink.TabIndex = 17;
+            this.helpLink.TabIndex = 25;
             this.helpLink.TabStop = true;
             this.helpLink.Text = "help";
             this.helpLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.helpLink_LinkClicked);
