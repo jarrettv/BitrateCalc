@@ -36,7 +36,7 @@
       <Value Profile="(Default)">3</Value>
     </Setting>
     <Setting Name="TotalBytes" Type="System.Int64" Scope="User">
-      <Value Profile="(Default)">4699717632</Value>
+      <Value Profile="(Default)">4697620480</Value>
     </Setting>
     <Setting Name="VideoBytes" Type="System.Int64" Scope="User">
       <Value Profile="(Default)">4581111808</Value>

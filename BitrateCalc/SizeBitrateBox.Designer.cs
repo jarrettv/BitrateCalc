@@ -45,6 +45,8 @@
             this.NumUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.NumUpDown.ThousandsSeparator = true;
             this.NumUpDown.ValueChanged += new System.EventHandler(this.NumUpDown_ValueChanged);
+            this.NumUpDown.Click += new System.EventHandler(this.NumUpDown_Focus);
+            this.NumUpDown.Enter += new System.EventHandler(this.NumUpDown_Focus);
             this.NumUpDown.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NumUpDown_KeyDown);
             // 
             // UnitSwitch

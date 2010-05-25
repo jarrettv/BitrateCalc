@@ -30,7 +30,7 @@ namespace BitrateCalc
             var ratio = (decimal)this.length.Ticks / (decimal)length.Ticks;
             if (ratio == 0 || keepSize) ratio = 1;
             var result = new SizeLength((long)((decimal)this.bytes / ratio), length);
-            Trace.Assert(Math.Abs(result.Kbps - bitrate) < 0.01 || keepSize);
+            //Trace.Assert(Math.Abs(result.Kbps - bitrate) < 0.01 || keepSize);
             return result;
         }
 

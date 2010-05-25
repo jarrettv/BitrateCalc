@@ -157,7 +157,7 @@ namespace BitrateCalc.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4699717632")]
+        [global::System.Configuration.DefaultSettingValueAttribute("4697620480")]
         public long TotalBytes {
             get {
                 return ((long)(this["TotalBytes"]));

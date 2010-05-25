@@ -110,15 +110,15 @@ namespace BitrateCalc
             this.timeText = new System.Windows.Forms.TextBox();
             this.container = new System.Windows.Forms.ComboBox();
             this.sizeGroupbox = new System.Windows.Forms.GroupBox();
+            this.averageBitrateRadio = new System.Windows.Forms.RadioButton();
             this.videoSize = new BitrateCalc.SizeBitrateBox();
-            this.totalSize = new BitrateCalc.SizeBitrateBox();
-            this.presetLink = new System.Windows.Forms.LinkLabel();
-            this.qEstRadio = new System.Windows.Forms.RadioButton();
-            this.qest = new System.Windows.Forms.NumericUpDown();
             this.bppRadio = new System.Windows.Forms.RadioButton();
             this.bpp = new System.Windows.Forms.NumericUpDown();
+            this.qEstRadio = new System.Windows.Forms.RadioButton();
+            this.qest = new System.Windows.Forms.NumericUpDown();
             this.fileSizeRadio = new System.Windows.Forms.RadioButton();
-            this.averageBitrateRadio = new System.Windows.Forms.RadioButton();
+            this.totalSize = new BitrateCalc.SizeBitrateBox();
+            this.presetLink = new System.Windows.Forms.LinkLabel();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.addAudioExtraMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addAudioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -147,8 +147,8 @@ namespace BitrateCalc
             ((System.ComponentModel.ISupportInitialize)(this.picTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.totalSeconds)).BeginInit();
             this.sizeGroupbox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.qest)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bpp)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.qest)).BeginInit();
             this.addAudioExtraMenu.SuspendLayout();
             this.audioExtraGroupbox.SuspendLayout();
             this.helpMenu.SuspendLayout();
@@ -255,6 +255,7 @@ namespace BitrateCalc
             0,
             0,
             0});
+            this.height.ValueChanged += new System.EventHandler(this.value_Changed);
             // 
             // label10
             // 
@@ -286,6 +287,7 @@ namespace BitrateCalc
             0,
             0,
             0});
+            this.width.ValueChanged += new System.EventHandler(this.value_Changed);
             // 
             // label8
             // 
@@ -517,21 +519,32 @@ namespace BitrateCalc
             // 
             // sizeGroupbox
             // 
+            this.sizeGroupbox.Controls.Add(this.averageBitrateRadio);
             this.sizeGroupbox.Controls.Add(this.videoSize);
-            this.sizeGroupbox.Controls.Add(this.totalSize);
-            this.sizeGroupbox.Controls.Add(this.presetLink);
-            this.sizeGroupbox.Controls.Add(this.qEstRadio);
-            this.sizeGroupbox.Controls.Add(this.qest);
             this.sizeGroupbox.Controls.Add(this.bppRadio);
             this.sizeGroupbox.Controls.Add(this.bpp);
+            this.sizeGroupbox.Controls.Add(this.qEstRadio);
+            this.sizeGroupbox.Controls.Add(this.qest);
             this.sizeGroupbox.Controls.Add(this.fileSizeRadio);
-            this.sizeGroupbox.Controls.Add(this.averageBitrateRadio);
+            this.sizeGroupbox.Controls.Add(this.totalSize);
+            this.sizeGroupbox.Controls.Add(this.presetLink);
             this.sizeGroupbox.Location = new System.Drawing.Point(499, 71);
             this.sizeGroupbox.Name = "sizeGroupbox";
             this.sizeGroupbox.Size = new System.Drawing.Size(161, 276);
             this.sizeGroupbox.TabIndex = 15;
             this.sizeGroupbox.TabStop = false;
             this.sizeGroupbox.Text = "Calculate By";
+            // 
+            // averageBitrateRadio
+            // 
+            this.averageBitrateRadio.AutoSize = true;
+            this.averageBitrateRadio.Location = new System.Drawing.Point(16, 25);
+            this.averageBitrateRadio.Name = "averageBitrateRadio";
+            this.averageBitrateRadio.Size = new System.Drawing.Size(73, 17);
+            this.averageBitrateRadio.TabIndex = 15;
+            this.averageBitrateRadio.TabStop = true;
+            this.averageBitrateRadio.Text = "Video Size";
+            this.averageBitrateRadio.CheckedChanged += new System.EventHandler(this.calculationMode_CheckedChanged);
             // 
             // videoSize
             // 
@@ -541,66 +554,9 @@ namespace BitrateCalc
             this.videoSize.ReadOnly = true;
             this.videoSize.Size = new System.Drawing.Size(122, 24);
             this.videoSize.SizeUnit = BitrateCalc.SizeUnit.Kbps;
-            this.videoSize.TabIndex = 15;
+            this.videoSize.TabIndex = 16;
             this.videoSize.TabStop = false;
             this.videoSize.ValueChanged += new System.EventHandler(this.value_Changed);
-            // 
-            // totalSize
-            // 
-            this.totalSize.AutoSize = true;
-            this.totalSize.Location = new System.Drawing.Point(19, 220);
-            this.totalSize.Name = "totalSize";
-            this.totalSize.ReadOnly = false;
-            this.totalSize.Size = new System.Drawing.Size(122, 24);
-            this.totalSize.SizeUnit = BitrateCalc.SizeUnit.GB;
-            this.totalSize.TabIndex = 23;
-            this.totalSize.TabStop = false;
-            this.totalSize.ValueChanged += new System.EventHandler(this.value_Changed);
-            // 
-            // presetLink
-            // 
-            this.presetLink.AutoSize = true;
-            this.presetLink.Location = new System.Drawing.Point(19, 249);
-            this.presetLink.Name = "presetLink";
-            this.presetLink.Size = new System.Drawing.Size(87, 13);
-            this.presetLink.TabIndex = 24;
-            this.presetLink.TabStop = true;
-            this.presetLink.Text = "Preset: (custom)";
-            this.presetLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.presetLink_LinkClicked);
-            // 
-            // qEstRadio
-            // 
-            this.qEstRadio.AutoSize = true;
-            this.qEstRadio.Location = new System.Drawing.Point(16, 141);
-            this.qEstRadio.Name = "qEstRadio";
-            this.qEstRadio.Size = new System.Drawing.Size(103, 17);
-            this.qEstRadio.TabIndex = 20;
-            this.qEstRadio.TabStop = true;
-            this.qEstRadio.Text = "Quality Estimate";
-            this.qEstRadio.UseVisualStyleBackColor = true;
-            this.qEstRadio.CheckedChanged += new System.EventHandler(this.calculationMode_CheckedChanged);
-            // 
-            // qest
-            // 
-            this.qest.DecimalPlaces = 2;
-            this.qest.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.qest.Location = new System.Drawing.Point(19, 164);
-            this.qest.Name = "qest";
-            this.qest.ReadOnly = true;
-            this.qest.Size = new System.Drawing.Size(70, 21);
-            this.qest.TabIndex = 21;
-            this.qest.TabStop = false;
-            this.qest.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.qest.Value = new decimal(new int[] {
-            640,
-            0,
-            0,
-            131072});
-            this.qest.ValueChanged += new System.EventHandler(this.value_Changed);
             // 
             // bppRadio
             // 
@@ -608,7 +564,7 @@ namespace BitrateCalc
             this.bppRadio.Location = new System.Drawing.Point(16, 83);
             this.bppRadio.Name = "bppRadio";
             this.bppRadio.Size = new System.Drawing.Size(86, 17);
-            this.bppRadio.TabIndex = 18;
+            this.bppRadio.TabIndex = 15;
             this.bppRadio.TabStop = true;
             this.bppRadio.Text = "Bits Per Pixel";
             this.bppRadio.UseVisualStyleBackColor = true;
@@ -626,7 +582,7 @@ namespace BitrateCalc
             this.bpp.Name = "bpp";
             this.bpp.ReadOnly = true;
             this.bpp.Size = new System.Drawing.Size(69, 21);
-            this.bpp.TabIndex = 19;
+            this.bpp.TabIndex = 16;
             this.bpp.TabStop = false;
             this.bpp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.bpp.Value = new decimal(new int[] {
@@ -636,6 +592,40 @@ namespace BitrateCalc
             131072});
             this.bpp.ValueChanged += new System.EventHandler(this.value_Changed);
             // 
+            // qEstRadio
+            // 
+            this.qEstRadio.AutoSize = true;
+            this.qEstRadio.Location = new System.Drawing.Point(16, 141);
+            this.qEstRadio.Name = "qEstRadio";
+            this.qEstRadio.Size = new System.Drawing.Size(103, 17);
+            this.qEstRadio.TabIndex = 15;
+            this.qEstRadio.TabStop = true;
+            this.qEstRadio.Text = "Quality Estimate";
+            this.qEstRadio.UseVisualStyleBackColor = true;
+            this.qEstRadio.CheckedChanged += new System.EventHandler(this.calculationMode_CheckedChanged);
+            // 
+            // qest
+            // 
+            this.qest.DecimalPlaces = 2;
+            this.qest.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.qest.Location = new System.Drawing.Point(19, 164);
+            this.qest.Name = "qest";
+            this.qest.ReadOnly = true;
+            this.qest.Size = new System.Drawing.Size(70, 21);
+            this.qest.TabIndex = 16;
+            this.qest.TabStop = false;
+            this.qest.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.qest.Value = new decimal(new int[] {
+            640,
+            0,
+            0,
+            131072});
+            this.qest.ValueChanged += new System.EventHandler(this.value_Changed);
+            // 
             // fileSizeRadio
             // 
             this.fileSizeRadio.AutoSize = true;
@@ -644,21 +634,32 @@ namespace BitrateCalc
             this.fileSizeRadio.Location = new System.Drawing.Point(16, 199);
             this.fileSizeRadio.Name = "fileSizeRadio";
             this.fileSizeRadio.Size = new System.Drawing.Size(102, 17);
-            this.fileSizeRadio.TabIndex = 22;
+            this.fileSizeRadio.TabIndex = 15;
             this.fileSizeRadio.TabStop = true;
             this.fileSizeRadio.Text = "Total File Size";
             this.fileSizeRadio.CheckedChanged += new System.EventHandler(this.calculationMode_CheckedChanged);
             // 
-            // averageBitrateRadio
+            // totalSize
             // 
-            this.averageBitrateRadio.AutoSize = true;
-            this.averageBitrateRadio.Location = new System.Drawing.Point(16, 25);
-            this.averageBitrateRadio.Name = "averageBitrateRadio";
-            this.averageBitrateRadio.Size = new System.Drawing.Size(73, 17);
-            this.averageBitrateRadio.TabIndex = 15;
-            this.averageBitrateRadio.TabStop = true;
-            this.averageBitrateRadio.Text = "Video Size";
-            this.averageBitrateRadio.CheckedChanged += new System.EventHandler(this.calculationMode_CheckedChanged);
+            this.totalSize.AutoSize = true;
+            this.totalSize.Location = new System.Drawing.Point(19, 220);
+            this.totalSize.Name = "totalSize";
+            this.totalSize.ReadOnly = false;
+            this.totalSize.Size = new System.Drawing.Size(122, 24);
+            this.totalSize.SizeUnit = BitrateCalc.SizeUnit.GB;
+            this.totalSize.TabIndex = 16;
+            this.totalSize.ValueChanged += new System.EventHandler(this.value_Changed);
+            // 
+            // presetLink
+            // 
+            this.presetLink.AutoSize = true;
+            this.presetLink.Location = new System.Drawing.Point(19, 249);
+            this.presetLink.Name = "presetLink";
+            this.presetLink.Size = new System.Drawing.Size(87, 13);
+            this.presetLink.TabIndex = 17;
+            this.presetLink.TabStop = true;
+            this.presetLink.Text = "Preset: (custom)";
+            this.presetLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.presetLink_LinkClicked);
             // 
             // addAudioExtraMenu
             // 
@@ -743,7 +744,7 @@ namespace BitrateCalc
             this.helpLink.Location = new System.Drawing.Point(633, 14);
             this.helpLink.Name = "helpLink";
             this.helpLink.Size = new System.Drawing.Size(27, 13);
-            this.helpLink.TabIndex = 25;
+            this.helpLink.TabIndex = 20;
             this.helpLink.TabStop = true;
             this.helpLink.Text = "help";
             this.helpLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.helpLink_LinkClicked);
@@ -824,8 +825,8 @@ namespace BitrateCalc
             ((System.ComponentModel.ISupportInitialize)(this.totalSeconds)).EndInit();
             this.sizeGroupbox.ResumeLayout(false);
             this.sizeGroupbox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.qest)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bpp)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.qest)).EndInit();
             this.addAudioExtraMenu.ResumeLayout(false);
             this.audioExtraGroupbox.ResumeLayout(false);
             this.helpMenu.ResumeLayout(false);

@@ -94,10 +94,10 @@ namespace BitrateCalc
 
 
             // set focus of calculate by
-            this.videoSize.Click += (s, args) => videoSize.Focus();
-            this.bppRadio.Click += (s, args) => bpp.Focus();
-            this.qEstRadio.Click += (s, args) => qest.Focus();
-            this.fileSizeRadio.Click += (s, args) => totalSize.Focus();
+            //this.videoSize.Click += (s, args) => videoSize.Focus();
+            //this.bppRadio.Click += (s, args) => bpp.Focus();
+            //this.qEstRadio.Click += (s, args) => qest.Focus();
+            //this.fileSizeRadio.Click += (s, args) => totalSize.Focus();
 
             // smart focus for audio and extras (try to fix render bug w/ scrollbar)
             this.audioExtraFlow.ControlRemoved += (s, args) =>
@@ -172,9 +172,13 @@ namespace BitrateCalc
 			if (rb.Checked)
             {
                 videoSize.ReadOnly = !averageBitrateRadio.Checked;
+                videoSize.TabStop = averageBitrateRadio.Checked;
                 bpp.ReadOnly = !bppRadio.Checked;
+                bpp.TabStop = bppRadio.Checked;
                 qest.ReadOnly = !qEstRadio.Checked;
+                qest.TabStop = qEstRadio.Checked;
                 totalSize.ReadOnly = !fileSizeRadio.Checked;
+                totalSize.TabStop = fileSizeRadio.Checked;
                 presetLink.Enabled = !totalSize.ReadOnly;
 			}
 		}
@@ -484,6 +488,7 @@ namespace BitrateCalc
                 bpp.Value = (decimal)data.BitsPerPixel;
                 qest.Value = (decimal)data.QualityEstimate;
                 UpdatePresetLabel(null);
+                SaveSettings();
             }
             catch (Exception ex)
             {
@@ -517,6 +522,28 @@ namespace BitrateCalc
             bpp.ValueChanged += new EventHandler(value_Changed);
             qest.ValueChanged += new EventHandler(value_Changed);
             totalSize.ValueChanged += new EventHandler(value_Changed);
+        }
+
+        private void SaveSettings()
+        {
+            Settings.Default.ShowTotalSeconds = this.totalSeconds.Visible;
+            Settings.Default.VideoDuration = this.VideoDuration;
+            Settings.Default.VideoFramerate = float.Parse(this.framerate.Text);
+            Settings.Default.VideoCodec = this.videoCodec.SelectedItem.ToString();
+            Settings.Default.VideoHasBframes = this.bframes.Checked;
+            Settings.Default.VideoComplexity = this.complexity.Value;
+            Settings.Default.VideoDimension = new Size((int)this.width.Value, (int)this.height.Value);
+            Settings.Default.Container = this.container.SelectedItem.ToString();
+            Settings.Default.CalcBy = this.averageBitrateRadio.Checked ? 0 : this.bppRadio.Checked ? 1 : this.qEstRadio.Checked ? 2 : 3;
+            Settings.Default.VideoBytes = this.videoSize.SizeLength.Bytes;
+            Settings.Default.VideoSizeUnit = this.videoSize.SizeUnit.ToString();
+            Settings.Default.BitsPerPixel = (float)this.bpp.Value;
+            Settings.Default.QualityEstimate = (float)this.qest.Value;
+            Settings.Default.TotalBytes = this.totalSize.SizeLength.Bytes;
+            Settings.Default.TotalSizeUnit = this.totalSize.SizeUnit.ToString();
+
+            Settings.Default.Save();
+
         }
 
         private void ShowUpdateDialog(Version appVersion, Version newVersion, XDocument doc)

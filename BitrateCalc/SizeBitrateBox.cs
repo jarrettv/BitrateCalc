@@ -134,5 +134,10 @@ namespace BitrateCalc
         {
             if (e.KeyCode == Keys.Enter) NumUpDown_ValueChanged(sender, e);
         }
+
+        private void NumUpDown_Focus(object sender, EventArgs e)
+        {
+            NumUpDown.Select(0, NumUpDown.Text.Length);
+        }
     }
 }
